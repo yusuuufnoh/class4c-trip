@@ -575,22 +575,7 @@
                     <p>• Barang makanan (arang, air, ice, suda garfu, pinggan, bekas nak letak makanan)
                 </div>
                 <div class="card">
-                    <h3><i class="fas fa-user-check"></i> CONTACT </h3>
-                    <p><strong>Organizer:</strong> Muhammad Yusuf </p>
-                    <p><strong>Contact:</strong> Chat kat ws </p>
-                    <p><strong>Website created by:</strong> Muhammad Yusuf </p>
-                    <div style="margin-top: 15px; padding: 10px; background: #e8f4fc; border-radius: 8px;">
-                        <p><i class="fas fa-comment-dots"></i> <strong>Communication:</strong></p>
-                        <p>Pape update kat wassap</p>
                     </div>
-                </div>
-                <div class="card">
-                    <h3><i class="fas fa-clipboard-check"></i> CHECKLIST</h3>
-                    <p>✓ Confirm attendance kat wassap</p>
-                    <p>✓ Bawak barang barang sendiri</p>
-                    <p>✓ Jangan sidai time kumpul</p>
-                </div>
-            </div>
         </section>
     </div>
 
@@ -632,19 +617,120 @@
                 observer.observe(section);
             });
             
-            // Date countdown
-            const tripDate = new Date('2026-01-28');
-            const today = new Date();
-            const diffTime = tripDate - today;
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            
-            if (diffDays > 0) {
-                const countdownElement = document.createElement('div');
-                countdownElement.innerHTML = `<div style="margin-top: 10px; padding: 10px; background: rgba(255,255,255,0.2); border-radius: 10px;">
-                    <i class="fas fa-hourglass-half"></i> <strong>${diffDays} days</strong> until our trip!
-                </div>`;
-                document.querySelector('header .container').appendChild(countdownElement);
+                       // REAL-TIME COUNTDOWN FUNCTION
+            function updateCountdown() {
+                const tripDate = new Date('2026-01-28T07:00:00'); // Set to 7:00 AM on trip day
+                const now = new Date();
+                const diffTime = tripDate - now;
+                
+                // Calculate days, hours, minutes, seconds
+                const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diffTime % (1000 * 60)) / 1000);
+                
+                // Find or create countdown element
+                let countdownElement = document.getElementById('trip-countdown');
+                
+                if (!countdownElement) {
+                    countdownElement = document.createElement('div');
+                    countdownElement.id = 'trip-countdown';
+                    countdownElement.style.cssText = `
+                        margin-top: 15px;
+                        padding: 15px;
+                        background: rgba(255, 255, 255, 0.15);
+                        border-radius: 15px;
+                        backdrop-filter: blur(10px);
+                        border: 2px solid rgba(255, 255, 255, 0.2);
+                        font-size: 1.1rem;
+                        animation: pulse 2s infinite;
+                    `;
+                    document.querySelector('header .container').appendChild(countdownElement);
+                    
+                    // Add pulse animation
+                    const style = document.createElement('style');
+                    style.textContent = `
+                        @keyframes pulse {
+                            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(233, 196, 106, 0.4); }
+                            70% { transform: scale(1.02); box-shadow: 0 0 0 10px rgba(233, 196, 106, 0); }
+                            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(233, 196, 106, 0); }
+                        }
+                    `;
+                    document.head.appendChild(style);
+                }
+                
+                // Display different messages based on time
+                if (diffTime <= 0) {
+                    countdownElement.innerHTML = `
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                            <i class="fas fa-party-horn fa-beat" style="color: #e9c46a;"></i>
+                            <span style="font-weight: bold; font-size: 1.2rem;">🎉 TRIP DAY IS HERE! 🎉</span>
+                            <i class="fas fa-party-horn fa-beat" style="color: #e9c46a;"></i>
+                        </div>
+                        <div style="margin-top: 5px; font-size: 0.9rem;">
+                            Time to go to Kristal View!
+                        </div>
+                    `;
+                } else if (days === 0) {
+                    // Less than 24 hours remaining
+                    countdownElement.innerHTML = `
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 5px;">
+                            <i class="fas fa-clock fa-spin" style="color: #e76f51;"></i>
+                            <span style="font-weight: bold;">TODAY IS THE DAY!</span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; text-align: center;">
+                            <div>
+                                <div style="font-size: 1.5rem; font-weight: bold; color: #e9c46a;">${hours}</div>
+                                <div style="font-size: 0.8rem;">Hours</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 1.5rem; font-weight: bold; color: #e9c46a;">${minutes}</div>
+                                <div style="font-size: 0.8rem;">Minutes</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 1.5rem; font-weight: bold; color: #e9c46a;">${seconds}</div>
+                                <div style="font-size: 0.8rem;">Seconds</div>
+                            </div>
+                            <div style="display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-car fa-beat" style="font-size: 1.5rem; color: #2a9d8f;"></i>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // More than 24 hours remaining
+                    countdownElement.innerHTML = `
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px;">
+                            <i class="fas fa-hourglass-half fa-beat"></i>
+                            <span style="font-weight: bold;">COUNTDOWN TO TRIP:</span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; text-align: center;">
+                            <div>
+                                <div style="font-size: 1.8rem; font-weight: bold; color: #e9c46a;">${days}</div>
+                                <div style="font-size: 0.9rem;">Days</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 1.8rem; font-weight: bold; color: #e9c46a;">${hours}</div>
+                                <div style="font-size: 0.9rem;">Hours</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 1.8rem; font-weight: bold; color: #e9c46a;">${minutes}</div>
+                                <div style="font-size: 0.9rem;">Minutes</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 1.8rem; font-weight: bold; color: #e9c46a;">${seconds}</div>
+                                <div style="font-size: 0.9rem;">Seconds</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 8px; font-size: 0.9rem; opacity: 0.9;">
+                            <i class="fas fa-calendar-check"></i> Meeting: 7:00 AM at Kristal View
+                        </div>
+                    `;
+                }
             }
+            
+            // Initialize and update countdown every second
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
             
             // Add click to enlarge images
             const images = document.querySelectorAll('.gallery-item img');
